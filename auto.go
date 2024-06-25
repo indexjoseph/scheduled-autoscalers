@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/robfig/cron/v3"
 )
 
 func main() {
@@ -15,10 +17,36 @@ func main() {
 		return
 	}
 
+	c := cron.New()
+
+	runCron(c)
+
+	// go stopCron(c)
+
 	println(parsedTime.Location().String())
 	tz := parsedTime.Format("MST") // "MST" represents the timezone abbreviation
 	fmt.Println("Timezone abbreviation:", tz)
 
-	// location := parsedTime.Location()
-	// println(parsedTime.String())
+}
+
+func runCron(c *cron.Cron) {
+
+	// Define the Cron job schedule
+	c.AddFunc("* * * * * *", func() {
+		fmt.Println("apply corresponding policy")
+	})
+
+	// Start the Cron job scheduler
+	c.Start()
+
+	// Wait for the Cron job to run
+	time.Sleep(2 * time.Minute)
+
+	// Stop the Cron job scheduler
+	c.Stop()
+}
+
+func stopCron(c *cron.Cron) {
+
+	c.Stop().Done()
 }
